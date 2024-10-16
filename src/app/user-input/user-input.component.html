@@ -1,0 +1,7 @@
+<form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Enter your message</mat-label>
+    <textarea matInput formControlName="message" rows="3"></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Send</button>
+</form>
