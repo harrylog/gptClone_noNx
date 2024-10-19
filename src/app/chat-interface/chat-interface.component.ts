@@ -1,10 +1,12 @@
-// import { ChangeDetectionStrategy } from '@angular/core';
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserInputComponent } from '../user-input/user-input.component';
 import { MsgDisplayComponent } from '../msg-display/msg-display.component';
 import { Message } from '../models/message.model';
 import { ConversationService } from '../services/conversation.service';
+import { ActivatedRoute } from '@angular/router';
+import { Conversation } from '../models/conversation.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-interface',
@@ -13,50 +15,99 @@ import { ConversationService } from '../services/conversation.service';
   templateUrl: './chat-interface.component.html',
   styleUrl: './chat-interface.component.scss',
   providers: [ConversationService],
-
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatInterfaceComponent {
-  messages: Message[] = [];
+export class ChatInterfaceComponent implements OnInit, OnDestroy {
+  currentConversation: Conversation | null = null;
+  private subscriptions: Subscription[] = [];
 
-  constructor(private conversationService: ConversationService) {}
+  constructor(
+    private conversationService: ConversationService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
+    this.subscriptions.push(
+      this.route.params.subscribe({
+        next: (params) => {
+          const conversationId = params['id'];
+          if (conversationId) {
+            this.conversationService.setCurrentConversation(conversationId);
+          } else {
+            this.conversationService.createNewConversation();
+          }
+        },
+        error: (err) => console.error('Error in route params:', err),
+      })
+    );
+
+    this.subscriptions.push(
+      this.conversationService.getCurrentConversation().subscribe({
+        next: (conversation) => {
+          this.currentConversation = conversation;
+        },
+        error: (err) =>
+          console.error('Error getting current conversation:', err),
+      })
+    );
+  }
 
   onMessageSent(content: string) {
     const userMessage: Message = {
+      id: Date.now().toString(),
       content,
-      isUser: true,
       timestamp: new Date(),
-      id: Date.now().toString(), // Generate a simple unique id
+      isUser: true,
       sender: 'user',
       type: 'text',
+      status: 'sending',
     };
-    this.messages.push(userMessage);
+    this.conversationService.addMessageToCurrentConversation(userMessage);
 
-    this.conversationService.sendMessage(content).subscribe(
-      (responseContent: string) => {
-        const aiMessage: Message = {
-          content: responseContent,
-          isUser: false,
-          timestamp: new Date(),
-          id: Date.now().toString(), // Generate a simple unique id
-          sender: 'ai',
-          type: 'text',
-        };
-        this.messages.push(aiMessage);
-      },
-      (error) => {
-        console.error('Error:', error);
-        // Handle error (e.g., display error message to user)
-        const errorMessage: Message = {
-          content: 'Sorry, there was an error processing your request.',
-          isUser: false,
-          timestamp: new Date(),
-          id: Date.now().toString(),
-          sender: 'ai',
-          type: 'text',
-        };
-        this.messages.push(errorMessage);
-      }
+    this.subscriptions.push(
+      this.conversationService.sendMessage(content).subscribe({
+        next: (responseContent: string) => {
+          const aiMessage: Message = {
+            id: Date.now().toString(),
+            content: responseContent,
+            timestamp: new Date(),
+            isUser: false,
+            sender: 'ai',
+            type: 'text',
+            status: 'sent',
+          };
+          this.conversationService.addMessageToCurrentConversation(aiMessage);
+          // Update user message status to 'sent'
+          userMessage.status = 'sent';
+          this.conversationService.addMessageToCurrentConversation({
+            ...userMessage,
+          });
+        },
+        error: (error) => {
+          console.error('Error:', error);
+          const errorMessage: Message = {
+            id: Date.now().toString(),
+            content: 'Sorry, there was an error processing your request.',
+            timestamp: new Date(),
+            isUser: false,
+            sender: 'ai',
+            type: 'text',
+            status: 'error',
+          };
+          this.conversationService.addMessageToCurrentConversation(
+            errorMessage
+          );
+          // Update user message status to 'error'
+          userMessage.status = 'error';
+          this.conversationService.addMessageToCurrentConversation({
+            ...userMessage,
+          });
+        },
+      })
     );
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe from all subscriptions to prevent memory leaks
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

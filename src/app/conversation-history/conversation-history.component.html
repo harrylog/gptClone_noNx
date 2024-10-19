@@ -1,1 +1,10 @@
-<p>conversation-history works!</p>
+<div class="conversation-history">
+    <button class="new-chat-button" (click)="startNewConversation()">+ New chat</button>
+    <ul class="conversation-list">
+      <li *ngFor="let conversation of conversations">
+        <a [routerLink]="['/chat', conversation.id]" [class.active]="conversation.id === currentConversationId">
+          {{ conversation.title }}
+        </a>
+      </li>
+    </ul>
+  </div>

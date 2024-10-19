@@ -1,13 +1,32 @@
 .message {
-  margin: 10px;
+  max-width: 80%;
+  margin: 10px 0;
   padding: 10px;
   border-radius: 5px;
+  line-height: 1.5;
 }
+
 .user-message {
-  background-color: #e6f3ff;
-  text-align: right;
+  background-color: #40414F;
+  margin-left: auto;
 }
+
 .bot-message {
-  background-color: #f0f0f0;
-  text-align: left;
+  background-color: #444654;
+}
+
+.message-content {
+  word-wrap: break-word;
+}
+
+.message-status {
+  font-size: 0.8em;
+  color: #8E8EA0;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .message {
+    max-width: 90%;
+  }
 }

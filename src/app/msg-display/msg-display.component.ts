@@ -12,7 +12,11 @@ import { Message } from '../models/message.model';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MsgDisplayComponent {
-
   @Input() message!: Message;
-
+  getMessageClass(): string {
+    return this.message.isUser ? 'user-message' : 'bot-message';
+  }
+  getStatusClass(): string {
+    return `status-${this.message.status || 'sent'}`;
+  }
 }

@@ -1,3 +1,8 @@
-<!-- <button mat-raised-button color="primary">Click me!</button> -->
-<app-chat-interface></app-chat-interface>
-<router-outlet></router-outlet>
+<div class="app-container">
+  <aside class="sidebar">
+    <app-conversation-history></app-conversation-history>
+  </aside>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

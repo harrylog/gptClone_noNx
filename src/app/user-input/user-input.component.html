@@ -1,7 +1,24 @@
-<form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
-  <mat-form-field appearance="fill">
-    <mat-label>Enter your message</mat-label>
-    <textarea matInput formControlName="message" rows="3"></textarea>
+<form
+  [formGroup]="messageForm"
+  (ngSubmit)="onSubmit()"
+  class="user-input-container"
+>
+  <mat-form-field appearance="outline" class="message-input">
+    <textarea
+      matInput
+      formControlName="message"
+      placeholder="Type a message..."
+      [rows]="1"
+      cdkAutosizeMaxRows="5"
+      cdkTextareaAutosize
+    ></textarea>
   </mat-form-field>
-  <button mat-raised-button color="primary" type="submit">Send</button>
+  <button
+    mat-icon-button
+    type="submit"
+    [disabled]="!messageForm.valid"
+    aria-label="Send message"
+  >
+    <mat-icon>send</mat-icon>
+  </button>
 </form>

@@ -1,6 +1,10 @@
-<div
-  class="message"
-  [ngClass]="{ 'user-message': message.isUser, 'bot-message': !message.isUser }"
->
-  <p>{{ message.content }}</p>
+<div class="message" [ngClass]="[getMessageClass(), getStatusClass()]">
+  <div class="message-content" [ngSwitch]="message.type">
+    <div *ngSwitchCase="'text'">{{ message.content }}</div>
+    <div *ngSwitchCase="'image'">
+      <img [src]="message.content" alt="Image message" />
+    </div>
+    <pre *ngSwitchCase="'code'"><code>{{ message.content }}</code></pre>
+  </div>
+  <div class="message-status" *ngIf="message.status">{{ message.status }}</div>
 </div>
