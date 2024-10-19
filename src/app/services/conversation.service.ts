@@ -14,7 +14,7 @@ export class ConversationService {
   sendMessage(message: string): Observable<string> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${environment.openaiApiKey}`,
+      Authorization: `Bearer ${environment.openaiApiKey1}`,
     });
 
     const body = {
