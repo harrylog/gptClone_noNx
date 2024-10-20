@@ -1,10 +1,17 @@
 <div class="conversation-history">
-    <button class="new-chat-button" (click)="startNewConversation()">+ New chat</button>
-    <ul class="conversation-list">
-      <li *ngFor="let conversation of conversations">
-        <a [routerLink]="['/chat', conversation.id]" [class.active]="conversation.id === currentConversationId">
-          {{ conversation.title }}
-        </a>
+  <button (click)="startNewConversation()">+ New chat</button>
+
+  <ng-container *ngIf="conversations$ | async as conversations">
+    <p>Debug: Number of conversations: {{ conversations.length }}</p>
+
+    <ul *ngIf="conversations.length > 0">
+      <li *ngFor="let conversation of conversations" >
+      
+          {{ conversation.title }} ({{ conversation.messages.length }} messages)
+      
       </li>
     </ul>
-  </div>
+
+    <p *ngIf="conversations.length === 0">No conversations yet.</p>
+  </ng-container>
+</div>

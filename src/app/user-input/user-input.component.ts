@@ -25,7 +25,7 @@ export class UserInputComponent {
   messageForm: FormGroup;
 
   @Output() messageSent = new EventEmitter<string>();
-  @ViewChild('autosize') autosize!: CdkTextareaAutosize;
+  // @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
   constructor(private fb: FormBuilder) {
     this.messageForm = this.fb.group({
@@ -38,14 +38,9 @@ export class UserInputComponent {
       const message = this.messageForm.get('message')?.value.trim();
       this.messageSent.emit(message);
       this.messageForm.reset();
-      this.autosize.reset();
+      // this.autosize.reset();
     }
   }
 
-  onEnterKey(event: KeyboardEvent) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      this.onSubmit();
-    }
-  }
+ 
 }

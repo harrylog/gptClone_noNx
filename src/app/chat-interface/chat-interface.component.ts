@@ -43,6 +43,8 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.conversationService.getCurrentConversation().subscribe({
         next: (conversation) => {
+          console.log('Received current conversation:', conversation);
+
           this.currentConversation = conversation;
         },
         error: (err) =>
@@ -52,6 +54,8 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
   }
 
   onMessageSent(content: string) {
+    console.log('Sending message:', content);
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content,
@@ -78,9 +82,9 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
           this.conversationService.addMessageToCurrentConversation(aiMessage);
           // Update user message status to 'sent'
           userMessage.status = 'sent';
-          this.conversationService.addMessageToCurrentConversation({
-            ...userMessage,
-          });
+          // this.conversationService.addMessageToCurrentConversation({
+          //   ...userMessage,
+          // });
         },
         error: (error) => {
           console.error('Error:', error);

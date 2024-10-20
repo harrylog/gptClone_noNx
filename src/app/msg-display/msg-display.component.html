@@ -1,6 +1,6 @@
 <div class="message" [ngClass]="[getMessageClass(), getStatusClass()]">
   <div class="message-content" [ngSwitch]="message.type">
-    <div *ngSwitchCase="'text'">{{ message.content }}</div>
+    <div >{{ message.content }}</div>
     <div *ngSwitchCase="'image'">
       <img [src]="message.content" alt="Image message" />
     </div>

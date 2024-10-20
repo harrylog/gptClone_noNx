@@ -39,6 +39,8 @@ export class ConversationService {
   }
 
   getConversations(): Observable<Conversation[]> {
+    console.log('history');
+
     return this.conversations.asObservable();
   }
 
@@ -61,17 +63,22 @@ export class ConversationService {
   addMessageToCurrentConversation(message: Message): void {
     const current = this.currentConversation.getValue();
     if (current) {
-      current.messages.push(message);
-      current.updatedAt = new Date();
-      this.currentConversation.next({ ...current });
-      this.updateConversationsList(current);
+      const updatedConversation = {
+        ...current,
+        messages: [...current.messages, message],
+        updatedAt: new Date(),
+      };
+      this.currentConversation.next(updatedConversation);
+      this.updateConversationsList(updatedConversation);
+    } else {
+      console.warn('No current conversation found');
+      // Handle this case appropriately
     }
   }
+
   private updateConversationsList(updatedConversation: Conversation): void {
     const currentList = this.conversations.getValue();
-    const updatedList = currentList.map((conv) =>
-      conv.id === updatedConversation.id ? updatedConversation : conv
-    );
+    const updatedList = currentList.map((conv) => conv);
     this.conversations.next(updatedList);
   }
 
