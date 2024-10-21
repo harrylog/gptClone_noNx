@@ -58,6 +58,8 @@ export class ConversationService {
     const currentConversations = this.conversations.getValue();
     this.conversations.next([newConversation, ...currentConversations]);
     this.currentConversation.next(newConversation);
+    console.log('New conversation created:', newConversation);
+    console.log('Updated conversations list:', this.conversations.getValue());
   }
 
   addMessageToCurrentConversation(message: Message): void {
@@ -70,15 +72,18 @@ export class ConversationService {
       };
       this.currentConversation.next(updatedConversation);
       this.updateConversationsList(updatedConversation);
+      console.log('Message added to conversation:', updatedConversation);
+      console.log('Updated conversations list:', this.conversations.getValue());
     } else {
       console.warn('No current conversation found');
-      // Handle this case appropriately
     }
   }
 
   private updateConversationsList(updatedConversation: Conversation): void {
     const currentList = this.conversations.getValue();
-    const updatedList = currentList.map((conv) => conv);
+    const updatedList = currentList.map((conv) => 
+      conv.id === updatedConversation.id ? updatedConversation : conv
+    );
     this.conversations.next(updatedList);
   }
 

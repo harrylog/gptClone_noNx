@@ -6,7 +6,7 @@ import { Message } from '../models/message.model';
 import { ConversationService } from '../services/conversation.service';
 import { ActivatedRoute } from '@angular/router';
 import { Conversation } from '../models/conversation.model';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-chat-interface',
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, UserInputComponent, MsgDisplayComponent],
   templateUrl: './chat-interface.component.html',
   styleUrl: './chat-interface.component.scss',
-  providers: [ConversationService],
+  //providers: [ConversationService],
 })
 export class ChatInterfaceComponent implements OnInit, OnDestroy {
   currentConversation: Conversation | null = null;
@@ -39,12 +39,10 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
         error: (err) => console.error('Error in route params:', err),
       })
     );
-
     this.subscriptions.push(
       this.conversationService.getCurrentConversation().subscribe({
         next: (conversation) => {
           console.log('Received current conversation:', conversation);
-
           this.currentConversation = conversation;
         },
         error: (err) =>

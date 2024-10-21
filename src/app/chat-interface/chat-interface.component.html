@@ -1,9 +1,16 @@
 <div class="chat-container">
-  <div class="messages">
-    <app-msg-display
-      *ngFor="let message of currentConversation?.messages"
-      [message]="message"
-    ></app-msg-display>
+  <div class="messages" *ngIf="currentConversation">
+    <div
+      *ngFor="let message of currentConversation.messages"
+      class="message"
+      [ngClass]="{
+        'user-message': message.isUser,
+        'ai-message': !message.isUser
+      }"
+    >
+      <p>{{ message.content }}</p>
+      <small>{{ message.timestamp | date : "short" }}</small>
+    </div>
   </div>
   <app-user-input (messageSent)="onMessageSent($event)"></app-user-input>
 </div>

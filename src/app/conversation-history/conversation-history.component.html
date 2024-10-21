@@ -4,14 +4,15 @@
   <ng-container *ngIf="conversations$ | async as conversations">
     <p>Debug: Number of conversations: {{ conversations.length }}</p>
 
-    <ul *ngIf="conversations.length > 0">
-      <li *ngFor="let conversation of conversations" >
-      
-          {{ conversation.title }} ({{ conversation.messages.length }} messages)
-      
+    <ul *ngIf="conversations.length > 0; else noConversations">
+      <li *ngFor="let conversation of conversations" 
+          [class.active]="conversation.id === (currentConversationId$ | async)">
+        {{ conversation.title }} ({{ conversation.messages.length }} messages)
       </li>
     </ul>
 
-    <p *ngIf="conversations.length === 0">No conversations yet.</p>
+    <ng-template #noConversations>
+      <p>No conversations yet.</p>
+    </ng-template>
   </ng-container>
 </div>
