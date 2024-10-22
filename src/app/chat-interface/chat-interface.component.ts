@@ -14,7 +14,6 @@ import { Subscription, take } from 'rxjs';
   imports: [CommonModule, UserInputComponent, MsgDisplayComponent],
   templateUrl: './chat-interface.component.html',
   styleUrl: './chat-interface.component.scss',
-  //providers: [ConversationService],
 })
 export class ChatInterfaceComponent implements OnInit, OnDestroy {
   currentConversation: Conversation | null = null;
@@ -78,11 +77,8 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
             status: 'sent',
           };
           this.conversationService.addMessageToCurrentConversation(aiMessage);
-          // Update user message status to 'sent'
           userMessage.status = 'sent';
-          // this.conversationService.addMessageToCurrentConversation({
-          //   ...userMessage,
-          // });
+     
         },
         error: (error) => {
           console.error('Error:', error);
@@ -98,7 +94,6 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
           this.conversationService.addMessageToCurrentConversation(
             errorMessage
           );
-          // Update user message status to 'error'
           userMessage.status = 'error';
           this.conversationService.addMessageToCurrentConversation({
             ...userMessage,
@@ -109,7 +104,6 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Unsubscribe from all subscriptions to prevent memory leaks
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
